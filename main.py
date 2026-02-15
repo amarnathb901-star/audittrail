@@ -107,6 +107,21 @@ st.text ("478986")
 # When invoked, the prompt is formatted first, then passed to the model.
 #tweet_chain = tweet_prompt | gpt4o
 
+extraction_prompt = """Your task is to extract the campaign ID, start date, and end date from the user's natural language input.
+The campaign ID should be an integer.
+The start date and end date should be in 'YYYY-MM-DD' format.
+Your output must be a JSON object.
+Here is the user's input: {user_input}
+"""
+print("Extraction prompt defined.")
+
+class CampaignDetails(BaseModel):
+    campaign_id: int = Field(description="The ID of the campaign, as an integer")
+    start_date: str = Field(description="The start date in 'YYYY-MM-DD' format")
+    end_date: str = Field(description="The end date in 'YYYY-MM-DD' format")
+
+print("CampaignDetails Pydantic model defined.")
+
 user_input = "I want to retrieve metrics for campaign 12345, starting from January 1, 2023, until December 31, 2023."
 formatted_prompt = extraction_prompt.format(user_input=user_input)
 
