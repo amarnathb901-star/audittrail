@@ -9,4 +9,5 @@ streamlit
 
 langchain-community
 langchain-google-genai
-
+requests
+json
