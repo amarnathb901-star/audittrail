@@ -94,7 +94,7 @@ import streamlit as st
 
 st.header("Changelogs")
 
-st.text ("Sample Prompt: I want to retrieve metrics for campaign 478986, starting from January 1, 2026, until February 08, 2026.")
+st.text ("Sample Prompt: Give the changelogs for campaign 478986, starting from January 1, 2026, until February 08, 2026.")
 
 # --- Model Initialization ---
 # Initialize Google's Gemini 1.5 Flash model via LangChain's
@@ -149,9 +149,14 @@ if st.button("Fetch"):
 
 # Generate button - invokes the LangChain pipeline and displays the results
 
-    base_url = "https://api.kayzen.io/v1/campaigns/{campaign_id}/changelogs"
+    base_url = "https://console.kayzen.io/api/v1/rtbx/campaigns/{campaign_id}/changelogs"
     
-    url = base_url.format(campaign_id=campaign_id)
+    # Assuming campaign_id, start_date, and end_date are available from previous LLM extraction
+    # If they are not yet executed, they will default to initial values. 
+    # It's recommended to run the LLM extraction cell (5d3972f0) first to get the latest values.
+    
+    # Construct the URL with query parameters
+    url = f"{base_url.format(campaign_id=campaign_id)}?end_time={end_date}&start_time={start_date}"
     
     # Use the global access_token_global variable
     headers = {
