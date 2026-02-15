@@ -121,36 +121,35 @@ class CampaignDetails(BaseModel):
     end_date: str = Field(description="The end date in 'YYYY-MM-DD' format")
 
 #print("CampaignDetails Pydantic model defined.")
+if st.button("Fetch"):    
 
-user_input = st.text_input("User Prompt")
-st.text ("I want to retrieve metrics for campaign 478986, starting from January 1, 2023, until December 31, 2023.")
-
-#user_input = "I want to retrieve metrics for campaign 478986, starting from January 1, 2023, until December 31, 2023."
-formatted_prompt = extraction_prompt.format(user_input=user_input)
-
-print("Sending request to LLM with structured output...")
-
-# Create a structured LLM by binding the Pydantic model
-structured_llm = gpt4o.with_structured_output(CampaignDetails, method="json_mode")
-
-# Invoke the structured LLM
-parsed_data = structured_llm.invoke(formatted_prompt)
-
-print("LLM response received and parsed.")
-
-# Store the extracted values in separate variables
-campaign_id = parsed_data.campaign_id
-start_date = parsed_data.start_date
-end_date = parsed_data.end_date
-
-print(f"Extracted Campaign ID: {campaign_id}")
-print(f"Extracted Start Date: {start_date}")
-print(f"Extracted End Date: {end_date}")
-
+    user_input = st.text_input("User Prompt")
+    st.text ("I want to retrieve metrics for campaign 478986, starting from January 1, 2023, until December 31, 2023.")
     
+    #user_input = "I want to retrieve metrics for campaign 478986, starting from January 1, 2023, until December 31, 2023."
+    formatted_prompt = extraction_prompt.format(user_input=user_input)
+    
+    print("Sending request to LLM with structured output...")
+    
+    # Create a structured LLM by binding the Pydantic model
+    structured_llm = gpt4o.with_structured_output(CampaignDetails, method="json_mode")
+    
+    # Invoke the structured LLM
+    parsed_data = structured_llm.invoke(formatted_prompt)
+    
+    print("LLM response received and parsed.")
+    
+    # Store the extracted values in separate variables
+    campaign_id = parsed_data.campaign_id
+    start_date = parsed_data.start_date
+    end_date = parsed_data.end_date
+    
+    print(f"Extracted Campaign ID: {campaign_id}")
+    print(f"Extracted Start Date: {start_date}")
+    print(f"Extracted End Date: {end_date}")
+
 
 # Generate button - invokes the LangChain pipeline and displays the results
-if st.button("Fetch"):    
 
     base_url = "https://api.kayzen.io/v1/campaigns/{campaign_id}/changelogs"
     
