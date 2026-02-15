@@ -95,12 +95,13 @@ st.header("Changelogs")
 
 st.subheader("Enter the campaign id and the date range")
 
+campaign_id = st.number_input("Campaign Id")
+    
+date_range = st.date_input("Date Range")
+
 # Generate button - invokes the LangChain pipeline and displays the results
 if st.button("Fetch"):    
-    campaign_id = st.number_input("Campaign Id")
-    
-    date_range = st.date_input("Date Range")
-    
+
     base_url = "https://api.kayzen.io/v1/campaigns/{campaign_id}/changelogs"
     
     url = base_url.format(campaign_id=campaign_id)
