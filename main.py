@@ -105,7 +105,7 @@ st.text ("478986")
 # --- LangChain Pipeline ---
 # Chain the prompt template and model together using LangChain's pipe operator.
 # When invoked, the prompt is formatted first, then passed to the model.
-tweet_chain = tweet_prompt | gpt4o
+#tweet_chain = tweet_prompt | gpt4o
 
 user_input = "I want to retrieve metrics for campaign 12345, starting from January 1, 2023, until December 31, 2023."
 formatted_prompt = extraction_prompt.format(user_input=user_input)
