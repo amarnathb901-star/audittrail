@@ -143,14 +143,11 @@ st.header("Changelogs")
 
 st.subheader("Enter the campaign id and the date range")
 
-# Text input for the user to specify a tweet topic
-campaign_id = st.text_input("Campaign Id")
+campaign_id = st.campaignid_input("Campaign Id")
 
-# Numeric input to select how many tweets to generate (between 1 and 10)
-date_range = st.number_input("Date Range")
+date_range = st.daterange_input("Date Range")
 
 base_url = "https://api.kayzen.io/v1/campaigns/{campaign_id}/changelogs"
-campaign_id = 478986
 
 url = base_url.format(campaign_id=campaign_id)
 
