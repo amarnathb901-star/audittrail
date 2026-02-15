@@ -143,9 +143,9 @@ st.header("Changelogs")
 
 st.subheader("Enter the campaign id and the date range")
 
-campaign_id = st.campaignid_input("Campaign Id")
+campaign_id = st.number_input("Campaign Id")
 
-date_range = st.daterange_input("Date Range")
+date_range = st.date_input("Date Range")
 
 base_url = "https://api.kayzen.io/v1/campaigns/{campaign_id}/changelogs"
 
