@@ -95,7 +95,8 @@ st.header("Changelogs")
 
 st.subheader("Enter the campaign id and the date range")
 
-campaign_id = st.number_input("Campaign Id")
+campaign_id = st.number_input(label="Campaign Id",format = "%d")
+campaign_id  = 478986
     
 date_range = st.date_input("Date Range")
 
