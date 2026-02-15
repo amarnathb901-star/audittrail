@@ -120,9 +120,12 @@ class CampaignDetails(BaseModel):
     start_date: str = Field(description="The start date in 'YYYY-MM-DD' format")
     end_date: str = Field(description="The end date in 'YYYY-MM-DD' format")
 
-print("CampaignDetails Pydantic model defined.")
+#print("CampaignDetails Pydantic model defined.")
 
-user_input = "I want to retrieve metrics for campaign 478986, starting from January 1, 2023, until December 31, 2023."
+user_input = st.text_input("User Prompt")
+st.text ("I want to retrieve metrics for campaign 478986, starting from January 1, 2023, until December 31, 2023.")
+
+#user_input = "I want to retrieve metrics for campaign 478986, starting from January 1, 2023, until December 31, 2023."
 formatted_prompt = extraction_prompt.format(user_input=user_input)
 
 print("Sending request to LLM with structured output...")
