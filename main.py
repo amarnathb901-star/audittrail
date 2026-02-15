@@ -94,7 +94,7 @@ import streamlit as st
 
 st.header("Changelogs")
 
-st.text ("Sample Prompt: I want to retrieve metrics for campaign 478986, starting from January 1, 2023, until December 31, 2023.")
+st.text ("Sample Prompt: I want to retrieve metrics for campaign 478986, starting from January 1, 2026, until February 08, 2026.")
 
 # --- Model Initialization ---
 # Initialize Google's Gemini 1.5 Flash model via LangChain's
