@@ -94,9 +94,7 @@ import streamlit as st
 
 st.header("Changelogs")
 
-st.subheader("Enter the campaign id and the date range")
-st.text ("478986")
-
+st.text ("I want to retrieve metrics for campaign 478986, starting from January 1, 2023, until December 31, 2023.")
 
 # --- Model Initialization ---
 # Initialize Google's Gemini 1.5 Flash model via LangChain's
@@ -123,7 +121,6 @@ class CampaignDetails(BaseModel):
 #print("CampaignDetails Pydantic model defined.")
 
 user_input = st.text_input("User Prompt")
-st.text ("I want to retrieve metrics for campaign 478986, starting from January 1, 2023, until December 31, 2023.")
     
 
 if st.button("Fetch"):    
