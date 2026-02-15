@@ -94,9 +94,8 @@ import streamlit as st
 st.header("Changelogs")
 
 st.subheader("Enter the campaign id and the date range")
-
+st.text ("478986")
 campaign_id = st.number_input(label="Campaign Id",format = "%d")
-campaign_id  = 478986
     
 date_range = st.date_input("Date Range")
 
