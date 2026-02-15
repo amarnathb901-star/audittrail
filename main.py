@@ -6,11 +6,41 @@
 
 # --- Imports ---
 # LangChain components for LLM interaction and prompt management
+# --- Imports ---
 import streamlit as st
 import os
+import requests
+import json
+from langchain_openai import ChatOpenAI
 from langchain_core.prompts import PromptTemplate
-from langchain_core.output_parsers import StrOutputParser
 
+# 1. API Keys from Secrets
+os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
+
+# 2. Setup the Model
+gpt4o = ChatOpenAI(model_name="gpt-4o")
+
+# 3. Define a helper function to get the token (so it doesn't crash)
+def get_kayzen_token():
+    url = "https://api.kayzen.io/v1/authentication/token"
+    # Move these credentials to st.secrets['KAYZEN_BASIC_AUTH']
+    headers = {
+        "accept": "application/json",
+        "authorization": st.secrets['KAYZEN_BASIC_AUTH'],
+        "content-type": "application/json"
+    }
+    payload = {
+        "grant_type": "password",
+        "username": "amarnath.bs+liga_advaccmgr@kayzen.io",
+        "password": ['PWD']
+    }
+    response = requests.post(url, headers=headers, json=payload)
+    return response.json().get('access_token')
+
+# --- Streamlit UI ---
+st.header("Changelogs")
+campaign_id_input = st.text_input("Campaign Id")
+date_range = st.number_input("Date Range")
 
 # --- API Key Configuration ---
 # Load the Google API key from Streamlit's secrets manager
@@ -148,6 +178,8 @@ except requests.exceptions.RequestException as req_err:
 
 # Generate button - invokes the LangChain pipeline and displays the results
 if st.button("Generate"):
-    #tweets = tweet_chain.invoke({"campaign_id" : campaign_id, "date_range" : date_range})
-    st.write(response)
+    token = get_kayzen_token()
+    # Now you can use the token safely to call the changelog API
+    st.write(f"Using Token: {token[:10]}...")
+
     
