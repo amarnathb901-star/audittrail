@@ -94,7 +94,7 @@ import streamlit as st
 
 st.header("Changelogs")
 
-st.text ("I want to retrieve metrics for campaign 478986, starting from January 1, 2023, until December 31, 2023.")
+st.text ("Sample Prompt: I want to retrieve metrics for campaign 478986, starting from January 1, 2023, until December 31, 2023.")
 
 # --- Model Initialization ---
 # Initialize Google's Gemini 1.5 Flash model via LangChain's
@@ -104,6 +104,9 @@ st.text ("I want to retrieve metrics for campaign 478986, starting from January 
 # Chain the prompt template and model together using LangChain's pipe operator.
 # When invoked, the prompt is formatted first, then passed to the model.
 #tweet_chain = tweet_prompt | gpt4o
+
+
+user_input = st.text_input("User Prompt")
 
 extraction_prompt = """Your task is to extract the campaign ID, start date, and end date from the user's natural language input.
 The campaign ID should be an integer.
@@ -118,16 +121,13 @@ class CampaignDetails(BaseModel):
     start_date: str = Field(description="The start date in 'YYYY-MM-DD' format")
     end_date: str = Field(description="The end date in 'YYYY-MM-DD' format")
 
-#print("CampaignDetails Pydantic model defined.")
-
-user_input = st.text_input("User Prompt")
     
 
 if st.button("Fetch"):    
 
     formatted_prompt = extraction_prompt.format(user_input=user_input)
     
-    print("Sending request to LLM with structured output...")
+    #print("Sending request to LLM with structured output...")
     
     # Create a structured LLM by binding the Pydantic model
     structured_llm = gpt4o.with_structured_output(CampaignDetails, method="json_mode")
