@@ -96,7 +96,7 @@ st.header("Changelogs")
 st.subheader("Enter the campaign id and the date range")
 
 # Generate button - invokes the LangChain pipeline and displays the results
-if st.button("Fetch"):
+if st.button("Fetch")
 {
 
 campaign_id = st.number_input("Campaign Id")
