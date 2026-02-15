@@ -63,9 +63,6 @@ except requests.exceptions.Timeout as timeout_err:
 except requests.exceptions.RequestException as req_err:
     print(f"An unexpected error occurred: {req_err}")
 
-import requests
-import json
-
 base_url = "https://api.kayzen.io/v1/campaigns/{campaign_id}/changelogs"
 campaign_id = 478986
 
