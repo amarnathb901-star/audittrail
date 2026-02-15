@@ -95,7 +95,12 @@ st.header("Changelogs")
 
 st.subheader("Enter the campaign id and the date range")
 st.text ("478986")
-campaign_id = st.number_input(label="Campaign Id",format = "%d")
+campaign_id = st.number_input(
+    label="Campaign Id", 
+    value=0,      # Starting value as an int
+    step=1,      # Forces increments to be integers
+    format="%d"   # Displays the number without decimals
+)
     
 date_range = st.date_input("Date Range")
 
