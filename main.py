@@ -37,11 +37,6 @@ def get_kayzen_token():
     response = requests.post(url, headers=headers, json=payload)
     return response.json().get('access_token')
 
-# --- Streamlit UI ---
-st.header("Changelogs")
-campaign_id_input = st.text_input("Campaign Id")
-date_range = st.number_input("Date Range")
-
 # --- API Key Configuration ---
 # Load the Google API key from Streamlit's secrets manager
 # and set it as an environment variable for the Google GenAI client.
@@ -64,14 +59,14 @@ url = "https://api.kayzen.io/v1/authentication/token"
 
 headers = {
     "accept": "application/json",
-    "authorization": "Basic ZWRmY2M4Yjk0Y2Y1MTQzNjY0ZWMwYTcwOWFkNjhkYjI2MmJlMTIwMzpxMEEybnVlelliYW83VDF3Og==",
+    "authorization": st.secrets['KAYZEN_BASIC_AUTH'],
     "content-type": "application/json"
 }
 
 payload = {
     "grant_type": "password",
-    "username": "amarnath.bs+plat@kayzen.io",
-    "password": "bhandari"
+    "username": "amarnath.bs+liga_advaccmgr@kayzen.io",
+    "password": st.secrets['PWD']
 }
 
 try:
@@ -93,8 +88,44 @@ except requests.exceptions.Timeout as timeout_err:
 except requests.exceptions.RequestException as req_err:
     print(f"An unexpected error occurred: {req_err}")
 
+
+import streamlit as st
+
+st.header("Changelogs")
+
+st.subheader("Enter the campaign id and the date range")
+
+campaign_id = st.number_input("Campaign Id")
+
+date_range = st.date_input("Date Range")
+
 base_url = "https://api.kayzen.io/v1/campaigns/{campaign_id}/changelogs"
-campaign_id = 478986
+
+url = base_url.format(campaign_id=campaign_id)
+
+# Use the global access_token_global variable
+headers = {
+    "accept": "application/json",
+    "authorization": f"Bearer {access_token_global}",
+}
+
+try:
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()  # Raise an exception for HTTP errors (4xx or 5xx)
+    print("Status Code:", response.status_code)
+    print("Response Body:", response.json())
+except requests.exceptions.HTTPError as http_err:
+    print(f"HTTP error occurred: {http_err}")
+    print("Response Body (error):", response.text)
+except requests.exceptions.ConnectionError as conn_err:
+    print(f"Connection error occurred: {conn_err}")
+except requests.exceptions.Timeout as timeout_err:
+    print(f"Timeout error occurred: {timeout_err}")
+except requests.exceptions.RequestException as req_err:
+    print(f"An unexpected error occurred: {req_err}")
+
+
+base_url = "https://api.kayzen.io/v1/campaigns/{campaign_id}/changelogs"
 
 url = base_url.format(campaign_id=campaign_id)
 
@@ -137,40 +168,6 @@ tweet_chain = tweet_prompt | gpt4o
 
 # --- Streamlit UI ---
 # Page header and description
-import streamlit as st
-
-st.header("Changelogs")
-
-st.subheader("Enter the campaign id and the date range")
-
-campaign_id = st.number_input("Campaign Id")
-
-date_range = st.date_input("Date Range")
-
-base_url = "https://api.kayzen.io/v1/campaigns/{campaign_id}/changelogs"
-
-url = base_url.format(campaign_id=campaign_id)
-
-# Use the global access_token_global variable
-headers = {
-    "accept": "application/json",
-    "authorization": f"Bearer {access_token_global}",
-}
-
-try:
-    response = requests.get(url, headers=headers)
-    response.raise_for_status()  # Raise an exception for HTTP errors (4xx or 5xx)
-    print("Status Code:", response.status_code)
-    print("Response Body:", response.json())
-except requests.exceptions.HTTPError as http_err:
-    print(f"HTTP error occurred: {http_err}")
-    print("Response Body (error):", response.text)
-except requests.exceptions.ConnectionError as conn_err:
-    print(f"Connection error occurred: {conn_err}")
-except requests.exceptions.Timeout as timeout_err:
-    print(f"Timeout error occurred: {timeout_err}")
-except requests.exceptions.RequestException as req_err:
-    print(f"An unexpected error occurred: {req_err}")
 
 
 # Generate button - invokes the LangChain pipeline and displays the results
