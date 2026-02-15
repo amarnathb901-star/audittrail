@@ -96,40 +96,38 @@ st.header("Changelogs")
 st.subheader("Enter the campaign id and the date range")
 
 # Generate button - invokes the LangChain pipeline and displays the results
-if st.button("Fetch"):
-{
+if st.button("Fetch"):    
+    campaign_id = st.number_input("Campaign Id")
+    
+    date_range = st.date_input("Date Range")
+    
+    base_url = "https://api.kayzen.io/v1/campaigns/{campaign_id}/changelogs"
+    
+    url = base_url.format(campaign_id=campaign_id)
+    
+    # Use the global access_token_global variable
+    headers = {
+        "accept": "application/json",
+        "authorization": f"Bearer {access_token_global}",
+    }
+    
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Raise an exception for HTTP errors (4xx or 5xx)
+        print("Status Code:", response.status_code)
+        print("Response Body:", response.json())
+    except requests.exceptions.HTTPError as http_err:
+        print(f"HTTP error occurred: {http_err}")
+        print("Response Body (error):", response.text)
+    except requests.exceptions.ConnectionError as conn_err:
+        print(f"Connection error occurred: {conn_err}")
+    except requests.exceptions.Timeout as timeout_err:
+        print(f"Timeout error occurred: {timeout_err}")
+    except requests.exceptions.RequestException as req_err:
+        print(f"An unexpected error occurred: {req_err}")
+    
+    st.write(response.json()) # Note: Added .json() to make it readable
 
-campaign_id = st.number_input("Campaign Id")
-
-date_range = st.date_input("Date Range")
-
-base_url = "https://api.kayzen.io/v1/campaigns/{campaign_id}/changelogs"
-
-url = base_url.format(campaign_id=campaign_id)
-
-# Use the global access_token_global variable
-headers = {
-    "accept": "application/json",
-    "authorization": f"Bearer {access_token_global}",
-}
-
-try:
-    response = requests.get(url, headers=headers)
-    response.raise_for_status()  # Raise an exception for HTTP errors (4xx or 5xx)
-    print("Status Code:", response.status_code)
-    print("Response Body:", response.json())
-except requests.exceptions.HTTPError as http_err:
-    print(f"HTTP error occurred: {http_err}")
-    print("Response Body (error):", response.text)
-except requests.exceptions.ConnectionError as conn_err:
-    print(f"Connection error occurred: {conn_err}")
-except requests.exceptions.Timeout as timeout_err:
-    print(f"Timeout error occurred: {timeout_err}")
-except requests.exceptions.RequestException as req_err:
-    print(f"An unexpected error occurred: {req_err}")
-
-st.write(response)
-}
 
 # --- Prompt Template ---
 # Define the prompt template with placeholders for the number of tweets
