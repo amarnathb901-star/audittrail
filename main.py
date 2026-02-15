@@ -122,7 +122,7 @@ class CampaignDetails(BaseModel):
 
 print("CampaignDetails Pydantic model defined.")
 
-user_input = "I want to retrieve metrics for campaign 12345, starting from January 1, 2023, until December 31, 2023."
+user_input = "I want to retrieve metrics for campaign 478986, starting from January 1, 2023, until December 31, 2023."
 formatted_prompt = extraction_prompt.format(user_input=user_input)
 
 print("Sending request to LLM with structured output...")
