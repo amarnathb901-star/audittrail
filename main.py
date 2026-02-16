@@ -189,7 +189,7 @@ if st.button("Fetch"):
         if table_data:
             df = pd.DataFrame(table_data)
             print("\n--- Changelogs Table ---\n")
-            display(df.to_markdown(index=False))
+            st.write(df.to_markdown(index=False))
         else:
             print("No changelog data found.")
     
@@ -203,7 +203,7 @@ if st.button("Fetch"):
     except requests.exceptions.RequestException as req_err:
         print(f"An unexpected error occurred: {req_err}")
         
-        st.write(response) # Note: Added .json() to make it readable
+        #st.write(response) # Note: Added .json() to make it readable
 
 
     
