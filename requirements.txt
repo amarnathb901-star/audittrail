@@ -9,4 +9,4 @@ streamlit
 
 langchain-community
 langchain-google-genai
-
+tabulate
