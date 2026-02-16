@@ -23,7 +23,7 @@ gpt4o = ChatOpenAI(model_name="gpt-4o")
 
 # 3. Define a helper function to get the token (so it doesn't crash)
 def get_kayzen_token():
-url = "https://api.kayzen.io/v1/authentication/token"
+    url = "https://api.kayzen.io/v1/authentication/token"
     # Move these credentials to st.secrets['KAYZEN_BASIC_AUTH']
     headers = {
         "accept": "application/json",
