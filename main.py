@@ -21,22 +21,23 @@ os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
 # 2. Setup the Model
 gpt4o = ChatOpenAI(model_name="gpt-4o")
 
-# 3. Define a helper function to get the token (so it doesn't crash)
-def get_kayzen_token():
-    url = "https://api.kayzen.io/v1/authentication/token"
-    # Move these credentials to st.secrets['KAYZEN_BASIC_AUTH']
-    headers = {
-        "accept": "application/json",
-        "authorization": st.secrets['KAYZEN_BASIC_AUTH'],
-        "content-type": "application/json"
-    }
-    payload = {
-        "grant_type": "password",
-        "username": "amarnath.bs+liga_advaccmgr@kayzen.io",
-        "password": ['PWD']
-    }
-    response = requests.post(url, headers=headers, json=payload)
-    return response.json().get('access_token')
+# Using Google Models (Gemini Flash)
+#from langchain_google_genai import ChatGoogleGenerativeAI
+
+
+url = "https://api.kayzen.io/v1/authentication/token"
+
+headers = {
+    "accept": "application/json",
+    "authorization": st.secrets['KAYZEN_BASIC_AUTH'],
+    "content-type": "application/json"
+}
+
+payload = {
+    "grant_type": "password",
+    "username": "amarnath.bs+liga_advaccmgr@kayzen.io",
+    "password": st.secrets['PWD']
+}
 
 
 try:
