@@ -14,6 +14,7 @@ import json
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import PromptTemplate
 from pydantic import BaseModel, Field
+import pandas as pd
 
 # 1. API Keys from Secrets
 os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
@@ -117,96 +118,92 @@ if st.button("Fetch"):
     print(f"Extracted End Date: {end_date}")
 
 
-# Generate button - invokes the LangChain pipeline and displays the results
-
-import requests
-import json
-import pandas as pd
-
-base_url = "https://console.kayzen.io/api/v1/rtbx/campaigns/{campaign_id}/changelogs"
-
-# Assuming campaign_id, start_date, and end_date are available from previous LLM extraction
-# If they are not yet executed, they will default to initial values. 
-# It's recommended to run the LLM extraction cell (5d3972f0) first to get the latest values.
-
-# Construct the URL with query parameters
-url = f"{base_url.format(campaign_id=campaign_id)}?end_time={end_date}&start_time={start_date}"
-
-# Use the global access_token_global variable
-headers = {
-    "accept": "application/json",
-    "authorization": f"Bearer {access_token_global}",
-}
-
-try:
-    response = requests.get(url, headers=headers)
-    response.raise_for_status()  # Raise an exception for HTTP errors (4xx or 5xx)
-    print("Status Code:", response.status_code)
-    response_data = response.json()
+    # Generate button - invokes the LangChain pipeline and displays the results
     
-    # Prepare data for table
-    table_data = []
-    for log in response_data.get('data', []):
-        log_id = log.get('id')
-        campaign_id = log.get('loggable_id')
-        action = log.get('action')
-        username = log.get('username')
-        updated_at = log.get('loggable_updated_at')
+    base_url = "https://console.kayzen.io/api/v1/rtbx/campaigns/{campaign_id}/changelogs"
+    
+    # Assuming campaign_id, start_date, and end_date are available from previous LLM extraction
+    # If they are not yet executed, they will default to initial values. 
+    # It's recommended to run the LLM extraction cell (5d3972f0) first to get the latest values.
+    
+    # Construct the URL with query parameters
+    url = f"{base_url.format(campaign_id=campaign_id)}?end_time={end_date}&start_time={start_date}"
+    
+    # Use the global access_token_global variable
+    headers = {
+        "accept": "application/json",
+        "authorization": f"Bearer {access_token_global}",
+    }
+    
+    try:
+        response = requests.get(url, headers=headers)
+        response.raise_for_status()  # Raise an exception for HTTP errors (4xx or 5xx)
+        print("Status Code:", response.status_code)
+        response_data = response.json()
         
-        # Summarize data_diff
-        data_diff = log.get('data_diff', {})
-        changes_summary = []
-        for key, value in data_diff.items():
-            if key == 'creatives' and value:
-                # Check if 'old' and 'new' exist and are different
-                old_creatives_status = {c.get('id'): c.get('status') for c in value.get('old', [])}
-                new_creatives_status = {c.get('id'): c.get('status') for c in value.get('new', [])}
-                if old_creatives_status != new_creatives_status:
-                    changes_summary.append('Creatives status updated')
-                elif value.get('old') or value.get('new'): # if there are creatives, just say updated
-                    changes_summary.append('Creatives updated')
-            elif key == 'trackers' and value:
-                if value.get('old') or value.get('new'):
-                    changes_summary.append('Trackers updated')
-            elif key == 'bid_values' and value:
-                if value.get('old') or value.get('new'):
-                    changes_summary.append('Bid values updated')
-            elif key == 'targeting' and value:
-                if value.get('old') or value.get('new'):
-                    changes_summary.append('Targeting updated')
-            elif value: # For other changes, just note the field name
-                changes_summary.append(f"{key.replace('_', ' ').title()} updated")
-
-        if not changes_summary:
-            changes_summary.append('No significant data changes recorded')
+        # Prepare data for table
+        table_data = []
+        for log in response_data.get('data', []):
+            log_id = log.get('id')
+            campaign_id = log.get('loggable_id')
+            action = log.get('action')
+            username = log.get('username')
+            updated_at = log.get('loggable_updated_at')
             
-        table_data.append({
-            'ID': log_id,
-            'Campaign ID': campaign_id,
-            'Action': action,
-            'User': username,
-            'Updated At (UTC)': updated_at,
-            'Changes': ', '.join(changes_summary)
-        })
+            # Summarize data_diff
+            data_diff = log.get('data_diff', {})
+            changes_summary = []
+            for key, value in data_diff.items():
+                if key == 'creatives' and value:
+                    # Check if 'old' and 'new' exist and are different
+                    old_creatives_status = {c.get('id'): c.get('status') for c in value.get('old', [])}
+                    new_creatives_status = {c.get('id'): c.get('status') for c in value.get('new', [])}
+                    if old_creatives_status != new_creatives_status:
+                        changes_summary.append('Creatives status updated')
+                    elif value.get('old') or value.get('new'): # if there are creatives, just say updated
+                        changes_summary.append('Creatives updated')
+                elif key == 'trackers' and value:
+                    if value.get('old') or value.get('new'):
+                        changes_summary.append('Trackers updated')
+                elif key == 'bid_values' and value:
+                    if value.get('old') or value.get('new'):
+                        changes_summary.append('Bid values updated')
+                elif key == 'targeting' and value:
+                    if value.get('old') or value.get('new'):
+                        changes_summary.append('Targeting updated')
+                elif value: # For other changes, just note the field name
+                    changes_summary.append(f"{key.replace('_', ' ').title()} updated")
     
-    if table_data:
-        df = pd.DataFrame(table_data)
-        print("\n--- Changelogs Table ---\n")
-        display(df.to_markdown(index=False))
-    else:
-        print("No changelog data found.")
-
-except requests.exceptions.HTTPError as http_err:
-    print(f"HTTP error occurred: {http_err}")
-    print("Response Body (error):", response.text)
-except requests.exceptions.ConnectionError as conn_err:
-    print(f"Connection error occurred: {conn_err}")
-except requests.exceptions.Timeout as timeout_err:
-    print(f"Timeout error occurred: {timeout_err}")
-except requests.exceptions.RequestException as req_err:
-    print(f"An unexpected error occurred: {req_err}")
+            if not changes_summary:
+                changes_summary.append('No significant data changes recorded')
+                
+            table_data.append({
+                'ID': log_id,
+                'Campaign ID': campaign_id,
+                'Action': action,
+                'User': username,
+                'Updated At (UTC)': updated_at,
+                'Changes': ', '.join(changes_summary)
+            })
+        
+        if table_data:
+            df = pd.DataFrame(table_data)
+            print("\n--- Changelogs Table ---\n")
+            display(df.to_markdown(index=False))
+        else:
+            print("No changelog data found.")
     
-    st.write(response) # Note: Added .json() to make it readable
+    except requests.exceptions.HTTPError as http_err:
+        print(f"HTTP error occurred: {http_err}")
+        print("Response Body (error):", response.text)
+    except requests.exceptions.ConnectionError as conn_err:
+        print(f"Connection error occurred: {conn_err}")
+    except requests.exceptions.Timeout as timeout_err:
+        print(f"Timeout error occurred: {timeout_err}")
+    except requests.exceptions.RequestException as req_err:
+        print(f"An unexpected error occurred: {req_err}")
+        
+        st.write(response) # Note: Added .json() to make it readable
 
 
     
