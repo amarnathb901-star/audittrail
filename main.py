@@ -23,7 +23,7 @@ gpt4o = ChatOpenAI(model_name="gpt-4o")
 
 # 3. Define a helper function to get the token (so it doesn't crash)
 def get_kayzen_token():
-    url = "https://api.kayzen.io/v1/authentication/token"
+url = "https://api.kayzen.io/v1/authentication/token"
     # Move these credentials to st.secrets['KAYZEN_BASIC_AUTH']
     headers = {
         "accept": "application/json",
@@ -38,37 +38,6 @@ def get_kayzen_token():
     response = requests.post(url, headers=headers, json=payload)
     return response.json().get('access_token')
 
-# --- API Key Configuration ---
-# Load the Google API key from Streamlit's secrets manager
-# and set it as an environment variable for the Google GenAI client.
-# The key should be defined in .streamlit/secrets.toml
-os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
-
-# Import ChatOpenAI module
-from langchain_openai import ChatOpenAI
-
-# Initialize OpenAI's GPT-4o-mini
-#gpt4o_mini = ChatOpenAI(model_name = "gpt-4o-mini")  # use "gpt-4o" for larger GPT-4 model
-
-gpt4o = ChatOpenAI(model_name = "gpt-4o")
-
-# Using Google Models (Gemini Flash)
-#from langchain_google_genai import ChatGoogleGenerativeAI
-
-
-url = "https://api.kayzen.io/v1/authentication/token"
-
-headers = {
-    "accept": "application/json",
-    "authorization": st.secrets['KAYZEN_BASIC_AUTH'],
-    "content-type": "application/json"
-}
-
-payload = {
-    "grant_type": "password",
-    "username": "amarnath.bs+liga_advaccmgr@kayzen.io",
-    "password": st.secrets['PWD']
-}
 
 try:
     response = requests.post(url, headers=headers, data=json.dumps(payload))
