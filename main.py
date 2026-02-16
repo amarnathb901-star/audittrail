@@ -15,6 +15,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.prompts import PromptTemplate
 from pydantic import BaseModel, Field
 import pandas as pd
+install tabulate
 
 # 1. API Keys from Secrets
 os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
